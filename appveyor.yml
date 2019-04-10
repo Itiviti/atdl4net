@@ -1,0 +1,23 @@
+image: Visual Studio 2017
+
+configuration: Release 
+
+before_build:
+    - nuget restore
+
+build:
+    project: Atdl4net.sln
+    verbosity: minimal
+  
+after_build:
+    - nuget pack Atdl4net/Atdl4net.csproj -properties Configuration=%configuration%
+    
+artifacts:
+    - path: '*.nupkg'
+
+deploy:
+    - provider: NuGet
+      symbol_server: https://ci.appveyor.com/nuget/atdl4net-p040g5yrxh7u/api/v2/package
+      api_key:
+          secure: rnV9nOL85Gf7/oOffEivmg5axEXoJx9zX7NrBisN8io=
+      artifact: /.*\.nupkg/
