@@ -21,6 +21,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using Atdl4net.Diagnostics;
 using Atdl4net.Diagnostics.Exceptions;
 using Atdl4net.Fix;
@@ -56,10 +57,28 @@ namespace Atdl4net.Model.Controls
         /// xsi:type is Clock_t.</summary>
         public string LocalMktTz { get; set; }
 
+        private string _controlInitValue;
         /// <summary>
         /// The InitValue from AlgoDefinition kept as string for deserialization purposes
         /// </summary>
-        public string ControlInitValue { get; set; }
+        public string ControlInitValue
+        {
+            get => _controlInitValue;
+            set
+            {
+                _controlInitValue = value;
+                ParsedControlInitValue = FixDateTimeFormat.AllFormats.Select(f =>
+                {
+                    if (DateTime.TryParseExact(_controlInitValue, f, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                    {
+                        return date as DateTime?;
+                    }
+                    return null;
+                }).FirstOrDefault(x => x != null);
+            }
+        }
+
+        private DateTime? ParsedControlInitValue { get; set; }
 
         public override string RawInitValue
         {
@@ -68,7 +87,7 @@ namespace Atdl4net.Model.Controls
                 if (ControlInitValue != null)
                 {
                     if (InitValueMode == 1)
-                        return DateTime.Now > DateTime.Parse(ControlInitValue) ? DateTime.Now.ToString(FixDateTimeFormat.FixDateTime) : ControlInitValue;
+                        return DateTime.Now > ParsedControlInitValue ? DateTime.Now.ToString(FixDateTimeFormat.FixDateTime) : ControlInitValue;
                     else
                         return ControlInitValue;
                 }
