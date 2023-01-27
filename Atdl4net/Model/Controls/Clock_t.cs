@@ -80,7 +80,7 @@ namespace Atdl4net.Model.Controls
 
         private DateTime? ParsedControlInitValue { get; set; }
 
-        public override string RawInitValue
+        public override string? RawInitValue
         {
             get
             {

@@ -51,7 +51,7 @@ namespace Atdl4net.Model.Controls.Support
         /// <summary>The value used to pre-populate the GUI component when the order entry screen is initially rendered.</summary>
         public T InitValue { get; set; }
 
-        public virtual string RawInitValue => InitValue?.ToString();
+        public virtual string? RawInitValue => InitValue?.ToString();
 
         /// <summary>
         /// Loads the initial value for this control based on the InitPolicy, InitFixField and InitValue attributes.
