@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -52,7 +52,7 @@ namespace Atdl4net.Model.Controls
         }
 
         // TODO: Implement LocalMktTz as a type.
-        /// <summary>The timezone in which initValue is represented in.  Required when initValue is supplied. Applicable when 
+        /// <summary>The timezone in which initValue is represented in.  Required when initValue is supplied. Applicable when
         /// xsi:type is Clock_t.</summary>
         public string LocalMktTz { get; set; }
 
@@ -60,6 +60,22 @@ namespace Atdl4net.Model.Controls
         /// The InitValue from AlgoDefinition kept as string for deserialization purposes
         /// </summary>
         public string ControlInitValue { get; set; }
+
+        public override string RawInitValue
+        {
+            get
+            {
+                if (ControlInitValue != null)
+                {
+                    if (InitValueMode == 1)
+                        return DateTime.Now > DateTime.Parse(ControlInitValue) ? DateTime.Now.ToString(FixDateTimeFormat.FixDateTime) : ControlInitValue;
+                    else
+                        return ControlInitValue;
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>Defines the treatment of initValue time. 0: use initValue; 1: use current time if initValue time has passed.
         /// The default value is 0.</summary>

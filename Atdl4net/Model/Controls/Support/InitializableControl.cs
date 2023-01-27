@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -29,13 +29,13 @@ using Common.Logging;
 namespace Atdl4net.Model.Controls.Support
 {
     /// <summary>
-    /// Generic base class for all controls.  Provides the ability to initialize controls based on the state of the InitPolicy, 
+    /// Generic base class for all controls.  Provides the ability to initialize controls based on the state of the InitPolicy,
     /// InitFixField and InitValue attributes.
     /// </summary>
     /// <typeparam name="T">Specified the type of the InitValue.  Note that this may not be the same as the type that the
     /// control uses to store its data, for example InitValue for list controls is of type string whereas this type of
     /// control uses EnumState to store its state.</typeparam>
-    public abstract class InitializableControl<T> : Control_t
+    public abstract class InitializableControl<T> : Control_t, IInitializableControl
     {
         private static readonly ILog _log = LogManager.GetLogger("Atdl4net.Model.Controls");
 
@@ -51,13 +51,15 @@ namespace Atdl4net.Model.Controls.Support
         /// <summary>The value used to pre-populate the GUI component when the order entry screen is initially rendered.</summary>
         public T InitValue { get; set; }
 
+        public virtual string RawInitValue => InitValue?.ToString();
+
         /// <summary>
         /// Loads the initial value for this control based on the InitPolicy, InitFixField and InitValue attributes.
         /// </summary>
         /// <param name="controlInitValueProvider">Value provider for initializing control values from InitFixField.</param>
-        /// <remarks>The spec states: 'If the value of the initPolicy attribute is undefined or equal to "UseValue" and the initValue attribute is 
-        /// defined then initialize with initValue.  If the value is equal to "UseFixField" then attempt to initialize with the value of 
-        /// the tag specified in the initFixField attribute. If the value is equal to "UseFixField" and it is not possible to access the 
+        /// <remarks>The spec states: 'If the value of the initPolicy attribute is undefined or equal to "UseValue" and the initValue attribute is
+        /// defined then initialize with initValue.  If the value is equal to "UseFixField" then attempt to initialize with the value of
+        /// the tag specified in the initFixField attribute. If the value is equal to "UseFixField" and it is not possible to access the
         /// value of the specified fix tag then revert to using initValue. If the value is equal to "UseFixField", the field is not accessible,
         /// and initValue is not defined, then do not initialize.<br></br>
         /// Note that it is possible to initialize an enumerated control (e.g., DropDownList_t) from a FIX_ value.  In this case, it must
