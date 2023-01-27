@@ -206,7 +206,7 @@ namespace Atdl4net.Model.Types.Support
                 return null;
 
             return DisplayTimeZone != null
-                ? TimeZoneInfo.ConvertTimeFromUtc(dateTime.Value, DisplayTimeZone).ToString(FixDateTimeFormat.FixTimeOnly)
+                ? TimeZoneInfo.ConvertTimeFromUtc(dateTime.Value, DisplayTimeZone).ToString(fixDateTimeFormat)
                 : dateTime.Value.ToString(fixDateTimeFormat);
         }
     }
