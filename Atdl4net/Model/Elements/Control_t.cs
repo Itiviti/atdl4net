@@ -132,7 +132,9 @@ namespace Atdl4net.Model.Elements
         /// <summary>
         /// Gets the <see cref="IParameter"/> referenced by this control.
         /// </summary>
-        public IParameter Parameter => OwningStrategyPanel.OwningStrategy.Parameters[ParameterRef];
+        public IParameter Parameter => !string.IsNullOrEmpty(ParameterRef)
+            ? OwningStrategyPanel.OwningStrategy.Parameters?[ParameterRef]
+            : null;
 
         /// <summary>
         /// Adds support for the visitor pattern, enabling the appropriate Visit() method to be called on the visitor
