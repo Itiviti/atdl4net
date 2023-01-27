@@ -24,6 +24,7 @@ using Atdl4net.Fix;
 using Atdl4net.Model.Collections;
 using Atdl4net.Model.Enumerations;
 using Atdl4net.Model.Types.Support;
+using Atdl4net.Utility;
 using Atdl4net.Validation;
 
 namespace Atdl4net.Model.Elements.Support
@@ -34,7 +35,7 @@ namespace Atdl4net.Model.Elements.Support
     /// a common type (IParameter) regardless of the type parameter used to create the <see cref="Parameter_t{T}"/> for
     /// the FIXatdl parameter.
     /// </summary>
-    public interface IParameter : IValueProvider
+    public interface IParameter : IValueProvider, IParameterizable
     {
         /// <summary>
         /// Initializes this parameter's value to a newly created instance of the type parameter.  This method is used if

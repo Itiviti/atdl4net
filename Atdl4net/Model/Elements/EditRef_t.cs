@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -36,7 +36,7 @@ namespace Atdl4net.Model.Elements
     /// <summary>
     /// Represents a FIXatdl EditRef_t.
     /// </summary>
-    public class EditRef_t<T> : IEdit<T>, IResolvable<Strategy_t, T> where T : class, IValueProvider
+    public class EditRef_t<T> : IEdit<T>, IResolvable<Strategy_t, T> where T : class, IValueProvider, IParameterizable
     {
         // Use Atdl4net.Validation namespace rather than Atdl4net.Model.Elements for debugging purposes
         private static readonly ILog _log = LogManager.GetLogger("Atdl4net.Validation");

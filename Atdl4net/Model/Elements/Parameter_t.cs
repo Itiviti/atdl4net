@@ -212,6 +212,8 @@ namespace Atdl4net.Model.Elements
             }
         }
 
+        public IParameter Parameter => this;
+
         #endregion
 
         #region IValueProvider Members

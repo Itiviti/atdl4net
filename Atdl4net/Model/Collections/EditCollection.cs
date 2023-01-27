@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -21,6 +21,7 @@
 
 using System.Collections.ObjectModel;
 using Atdl4net.Model.Elements;
+using Atdl4net.Utility;
 using Atdl4net.Validation;
 
 namespace Atdl4net.Model.Collections
@@ -53,7 +54,7 @@ namespace Atdl4net.Model.Collections
         /// <typeparam name="T"></typeparam>
         /// <param name="Id">The id.</param>
         /// <returns></returns>
-        public Edit_t<T> Clone<T>(string Id) where T : class, IValueProvider
+        public Edit_t<T> Clone<T>(string Id) where T : class, IValueProvider, IParameterizable
         {
             Edit_t sourceEdit = this[Id];
 
@@ -65,7 +66,7 @@ namespace Atdl4net.Model.Collections
         /// </summary>
         /// <param name="source">Instance of Edit_t to be copied.</param>
         /// <returns>Copy of source Edit_t instance.</returns>
-        private Edit_t<T> Copy<T>(Edit_t source) where T : class, IValueProvider
+        private Edit_t<T> Copy<T>(Edit_t source) where T : class, IValueProvider, IParameterizable
         {
             Edit_t<T> target = new Edit_t<T>() { Field = source.Field, Field2 = source.Field2, LogicOperator = source.LogicOperator, Operator = source.Operator, Value = source.Value };
 

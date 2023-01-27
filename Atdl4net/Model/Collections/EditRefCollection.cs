@@ -21,6 +21,7 @@
 
 using System.Collections.ObjectModel;
 using Atdl4net.Model.Elements;
+using Atdl4net.Utility;
 using Atdl4net.Validation;
 
 namespace Atdl4net.Model.Collections
@@ -29,7 +30,7 @@ namespace Atdl4net.Model.Collections
     /// Collection used to store typed instances of EditRef_t.
     /// </summary>
     /// <typeparam name="T">Type.</typeparam>
-    public class EditRefCollection<T> : KeyedCollection<string, EditRef_t<T>> where T : class, IValueProvider
+    public class EditRefCollection<T> : KeyedCollection<string, EditRef_t<T>> where T : class, IValueProvider, IParameterizable
     {
         private readonly EditEvaluatingCollection<T> _evaluatingCollection;
 
