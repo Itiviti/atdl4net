@@ -1,4 +1,5 @@
 ﻿#region Copyright (c) 2010-2012, Cornerstone Technology Limited. http://atdl4net.org
+
 //
 //   This software is released under both commercial and open-source licenses.
 //
@@ -8,16 +9,17 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
 //      You should have received a copy of the GNU Lesser General Public License along with Atdl4net.  If not, see
 //      http://www.gnu.org/licenses/.
 //
-#endregion
+
+#endregion Copyright (c) 2010-2012, Cornerstone Technology Limited. http://atdl4net.org
 
 using System;
 using System.Linq;
@@ -68,11 +70,11 @@ namespace Atdl4net.Model.Types.Support
         public bool IsSet { get { return (ConstValue ?? _value) != null; } }
 
         /// <summary>
-        /// Gets the value of this parameter as seen by the Control_t that references it.  May be null if the 
+        /// Gets the value of this parameter as seen by the Control_t that references it.  May be null if the
         /// parameter has no value, for example if it has explicitly been set via a state rule to {NULL}.
         /// </summary>
         /// <param name="hostParameter"><see cref="IParameter"/> that hosts the value.</param>
-        /// <remarks>An <see cref="IControlConvertible"/> is returned enabling the parameter value to be converted into any 
+        /// <remarks>An <see cref="IControlConvertible"/> is returned enabling the parameter value to be converted into any
         /// desired type, provided that the underlying value supports that type.</remarks>
         public IControlConvertible GetValueForControl(IParameter hostParameter)
         {
@@ -86,7 +88,7 @@ namespace Atdl4net.Model.Types.Support
         /// </summary>
         /// <param name="hostParameter"><see cref="IParameter"/> that hosts the value.</param>
         /// <param name="value">Control value that implements <see cref="IParameterConvertible"/>.</param>
-        /// <remarks>An <see cref="IParameterConvertible"/> is passed in enabling the control value to be converted into any 
+        /// <remarks>An <see cref="IParameterConvertible"/> is passed in enabling the control value to be converted into any
         /// desired type, provided that the value supports conversion to that type.</remarks>
         public ValidationResult SetValueFromControl(IParameter hostParameter, IParameterConvertible value)
         {
@@ -102,28 +104,28 @@ namespace Atdl4net.Model.Types.Support
             catch (InvalidFieldValueException ex)
             {
                 _log.Error(m => m("Invalid value of type {0} for parameter {1}; exception text: {2}",
-                    hostParameter.Type, hostParameter.Name, ex.Message));
+                    hostParameter.Type.Name, hostParameter.Name, ex.Message));
 
                 return new ValidationResult(ValidationResult.ResultType.Invalid, ErrorMessages.DataConversionFailure, value, HumanReadableTypeName);
             }
             catch (FormatException ex)
             {
                 _log.Error(m => m("Unable to convert value '{0}' to type {1} for parameter {2}; exception text: {3}",
-                    value, hostParameter.Type, hostParameter.Name, ex.Message));
+                    value, hostParameter.Type.Name, hostParameter.Name, ex.Message));
 
                 return new ValidationResult(ValidationResult.ResultType.Invalid, ErrorMessages.DataConversionFailure, value, HumanReadableTypeName);
             }
             catch (InvalidCastException ex)
             {
                 _log.Error(m => m("Unable to convert value '{0}' to type {1} for parameter {2}; exception text: {3}",
-                    value, hostParameter.Type, hostParameter.Name, ex.Message));
+                    value, hostParameter.Type.Name, hostParameter.Name, ex.Message));
 
                 return new ValidationResult(ValidationResult.ResultType.Invalid, ErrorMessages.DataConversionFailure, value, HumanReadableTypeName);
             }
             catch (ArgumentException ex)
             {
                 _log.Error(m => m("Unable to convert value '{0}' to type {1} for parameter {2}; exception text: {3}",
-                    value, hostParameter.Type, hostParameter.Name, ex.Message));
+                    value, hostParameter.Type.Name, hostParameter.Name, ex.Message));
 
                 return new ValidationResult(ValidationResult.ResultType.Invalid, ErrorMessages.DataConversionFailure, value, HumanReadableTypeName);
             }
@@ -162,8 +164,8 @@ namespace Atdl4net.Model.Types.Support
         /// Sets the wire value for this parameter.  This method is typically used to initialise the parameter through the
         /// InitValue mechanism, but may also be used to initialise the parameter when doing order amendments.
         /// </summary>
-        /// <param name="hostParameter"><see cref="Atdl4net.Model.Elements.Parameter_t{T}"/> that is hosting this type. 
-        /// Parameters in Atdl4net are represented by means of the generic Parameter_t type with the appropriate type parameter, 
+        /// <param name="hostParameter"><see cref="Atdl4net.Model.Elements.Parameter_t{T}"/> that is hosting this type.
+        /// Parameters in Atdl4net are represented by means of the generic Parameter_t type with the appropriate type parameter,
         /// for example, Parameter_t&lt;Amt_t&gt;.</param>
         /// <param name="value">New wire value (all wire values in Atdl4net are strings).</param>
         public void SetWireValue(IParameter hostParameter, string value)
@@ -193,7 +195,7 @@ namespace Atdl4net.Model.Types.Support
         /// be transmitted over FIX.
         /// </summary>
         /// <param name="hostParameter"><see cref="Parameter_t{T}"/> that is hosting this type.  Parameters in Atdl4net are
-        /// represented by means of the generic Parameter_t type with the appropriate type parameter, for example, 
+        /// represented by means of the generic Parameter_t type with the appropriate type parameter, for example,
         /// Parameter_t&lt;Amt_t&gt;.</param>
         /// <returns>The parameter's current wire value (all wire values in Atdl4net are strings).</returns>
         public string GetWireValue(IParameter hostParameter)
@@ -217,7 +219,7 @@ namespace Atdl4net.Model.Types.Support
         }
 
         /// <summary>
-        /// Gets the value of this parameter type in its native (i.e., raw) form, such as int, char, string, etc. 
+        /// Gets the value of this parameter type in its native (i.e., raw) form, such as int, char, string, etc.
         /// </summary>
         /// <param name="applyWireValueFormat">If set to true, the value returned is adjusted to be in the 'format'
         /// it would be if sent on the FIX wire.  For example, for Float_t parameters, setting this value to true
@@ -241,7 +243,7 @@ namespace Atdl4net.Model.Types.Support
             _value = null;
         }
 
-        #endregion
+        #endregion IParameterType Members
 
         #region Abstract Methods that all FIXatdl value-based types must implement
 
@@ -256,7 +258,7 @@ namespace Atdl4net.Model.Types.Support
 
         /// <summary>
         /// Converts the supplied value from string format (as might be used on the FIX wire) into the type of the type
-        /// parameter for this type.  
+        /// parameter for this type.
         /// </summary>
         /// <param name="value">Type to convert from string, may be null.</param>
         /// <returns>If input value is not null, returns value converted from a string; null otherwise.</returns>
@@ -285,6 +287,6 @@ namespace Atdl4net.Model.Types.Support
         /// <returns>Human-readable type name.</returns>
         protected abstract string GetHumanReadableTypeName();
 
-        #endregion
+        #endregion Abstract Methods that all FIXatdl value-based types must implement
     }
 }

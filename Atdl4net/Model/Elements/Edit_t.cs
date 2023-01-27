@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Atdl4net.Diagnostics.Exceptions;
 using Atdl4net.Fix;
@@ -29,6 +28,7 @@ using Atdl4net.Model.Collections;
 using Atdl4net.Model.Controls.Support;
 using Atdl4net.Model.Elements.Support;
 using Atdl4net.Model.Enumerations;
+using Atdl4net.Model.Types.Support;
 using Atdl4net.Resources;
 using Atdl4net.Utility;
 using Atdl4net.Validation;
@@ -45,7 +45,7 @@ namespace Atdl4net.Model.Elements
         /// <summary>
         /// Gets/sets the first field name for comparison. When the edit is used within a StateRule, this field
         /// must refer to the ID of a Control. When the edit is used within a StrategyEdit, this field must refer
-        /// to either the name of a parameter or a standard FIX field name. When referring to a standard FIX ta
+        /// to either the name of a parameter or a standard FIX field name. When referring to a standard FIX tag
         /// then the name must be pre-pended with the string "FIX_", e.g. "FIX_OrderQty". Required the Operator is
         /// not null.
         /// </summary>
@@ -335,7 +335,7 @@ namespace Atdl4net.Model.Elements
                 IComparable comparableRhs = rhs as IComparable;
 
                 if (comparableLhs != null && comparableRhs != null)
-                    equal = comparableLhs.CompareTo(comparableRhs) ==0;
+                    equal = comparableLhs.CompareTo(comparableRhs) == 0;
                 else
                     equal = lhs.Equals(rhs);
             }
@@ -394,24 +394,19 @@ namespace Atdl4net.Model.Elements
             if (Field.StartsWith("FIX_"))
                 return GetFixFieldValue(additionalValues, Field);
 
-            object result;
             object fieldValue = FieldValue;
 
-            // If the field value can be converted into a number, most likely it should be treated as one
-            // for comparison purposes
-            if (fieldValue is string)
+            if (fieldValue is string value &&
+                _fieldSource?.Parameter?.Type != null &&
+                    (typeof(AtdlValueType<decimal>).IsAssignableFrom(_fieldSource.Parameter.Type) ||
+                     typeof(AtdlValueType<int>).IsAssignableFrom(_fieldSource.Parameter.Type) ||
+                     typeof(AtdlValueType<uint>).IsAssignableFrom(_fieldSource.Parameter.Type)))
             {
-                decimal number;
-
-                if (decimal.TryParse(fieldValue as string, out number))
-                    result = number;
-                else
-                    result = fieldValue;
+                if (decimal.TryParse(value, out var number))
+                    return number;
             }
-            else
-                result = fieldValue;
 
-            return result;
+            return fieldValue;
         }
 
         private object GetRhsValue(FixFieldValueProvider additionalValues, object lhs)

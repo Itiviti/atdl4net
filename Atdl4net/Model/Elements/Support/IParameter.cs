@@ -93,7 +93,7 @@ namespace Atdl4net.Model.Elements.Support
         /// Gets or sets the type name of this parameter.
         /// </summary>
         /// <value>The type name (one of Amt_t, Boolean_t, Char_t, etc.).</value>
-        string Type { get; set; }
+        Type Type { get; set; }
 
         /// <summary>Indicates whether a parameter is optional or required. Valid values are "optional" and "required".
         /// The default value for this field is "optional".

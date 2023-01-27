@@ -59,7 +59,7 @@ namespace Atdl4net.Model.Elements
             _log.DebugFormat("New Parameter_t<{0}> created, Name='{1}'.", typeof(T).Name, name);
 
             Name = name;
-            Type = typeof(T).Name;
+            Type = typeof(T);
 
             // Set FIXatdl defaults
             Use = Use_t.Optional;
@@ -136,7 +136,7 @@ namespace Atdl4net.Model.Elements
         /// Gets or sets the type name of this parameter.
         /// </summary>
         /// <value>The type name (one of Amt_t, Boolean_t, Char_t, etc.).</value>
-        public string Type { get; set; }
+        public Type Type { get; set; }
 
         /// <summary>Indicates whether a parameter is optional or required. Valid values are "optional" and "required".
         /// The default value for this field is "optional".
