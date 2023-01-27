@@ -75,15 +75,9 @@ namespace Atdl4net.Model.Types
             return HumanReadableTypeNames.TimestampType;
         }
 
-        protected override string MaxValueString()
-        {
-            return MaxValue != null ? MaxValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
+        protected override string MaxValueString() => ConvertDateTimeToDisplayTimezone(MaxValue, FixDateTimeFormat.FixDateTime);
 
-        protected override string MinValueString()
-        {
-            return MinValue != null ? MinValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
+        protected override string MinValueString() => ConvertDateTimeToDisplayTimezone(MinValue, FixDateTimeFormat.FixDateTime);
 
         protected override ValidationResult ValidateValue(DateTime? value, bool isRequired, EnumPairCollection enumPairs)
         {

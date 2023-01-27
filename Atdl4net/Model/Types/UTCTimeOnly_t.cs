@@ -19,10 +19,8 @@
 //
 #endregion
 
-using System;
 using System.Collections.Generic;
 using Atdl4net.Fix;
-using Atdl4net.Model.Collections;
 using Atdl4net.Model.Types.Support;
 using Atdl4net.Resources;
 
@@ -61,14 +59,8 @@ namespace Atdl4net.Model.Types
             return HumanReadableTypeNames.TimeType;
         }
 
-        protected override string MaxValueString()
-        {
-            return MaxValue != null ? MaxValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
+        protected override string MaxValueString() => ConvertDateTimeToDisplayTimezone(MaxValue, FixDateTimeFormat.FixTimeOnly);
 
-        protected override string MinValueString()
-        {
-            return MinValue != null ? MinValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
+        protected override string MinValueString() => ConvertDateTimeToDisplayTimezone(MinValue, FixDateTimeFormat.FixTimeOnly);
     }
 }
