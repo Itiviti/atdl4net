@@ -21,8 +21,8 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
 using Atdl4net.Diagnostics;
+using Atdl4net.Fix;
 using Atdl4net.Model.Collections;
 using Atdl4net.Model.Controls.Support;
 using Atdl4net.Model.Elements.Support;
@@ -45,6 +45,11 @@ namespace Atdl4net.Model.Types.Support
         /// Minimum value for this date/time type, i.e., the earliest acceptable date/time.
         /// </summary>
         public DateTime? MinValue { get; set; }
+
+        /// <summary>
+        /// The timezone in which the validation messages will be displayed
+        /// </summary>
+        public TimeZoneInfo DisplayTimeZone { get; set; }
 
         #region AtdlReferenceType<string> Overrides
 
@@ -194,5 +199,15 @@ namespace Atdl4net.Model.Types.Support
         protected abstract string MaxValueString();
 
         protected abstract string MinValueString();
+
+        protected string ConvertDateTimeToDisplayTimezone(DateTime? dateTime, string fixDateTimeFormat)
+        {
+            if (!dateTime.HasValue)
+                return null;
+
+            return DisplayTimeZone != null
+                ? TimeZoneInfo.ConvertTimeFromUtc(dateTime.Value, DisplayTimeZone).ToString(fixDateTimeFormat)
+                : dateTime.Value.ToString(fixDateTimeFormat);
+        }
     }
 }

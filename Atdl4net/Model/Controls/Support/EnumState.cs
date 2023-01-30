@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -104,7 +104,7 @@ namespace Atdl4net.Model.Controls.Support
 
             for (int n = 0; n < _enumIds.Length; n++)
             {
-                for (int index =0;index < source._enumIds.Length; index++)
+                for (int index = 0; index < source._enumIds.Length; index++)
                     if (source._enumIds[index] == _enumIds[n])
                     {
                         _enumStates.Set(n, source._enumStates[index]);
@@ -293,7 +293,7 @@ namespace Atdl4net.Model.Controls.Support
                 allAreValid &= IsValidEnumId(enumId);
 
             if (!allAreValid && allowNonEnumValue)
-                    _nonEnumValue = initValues;
+                _nonEnumValue = initValues;
             else
             {
                 // [] operator will throw if any EnumId is invalid
@@ -314,10 +314,7 @@ namespace Atdl4net.Model.Controls.Support
         {
             _log.Debug(m => m("Converting EnumState to WireValue; current state is {0}", ToString()));
 
-            if (enumPairs.Count != _enumStates.Count)
-                throw ThrowHelper.New<InvalidOperationException>(ExceptionContext, ErrorMessages.InconsistentEnumPairsListItemsError);
-
-            // Override the values in the states collection if a non-enum value is supplied.  This is used to handle 
+            // Override the values in the states collection if a non-enum value is supplied.  This is used to handle
             // the unique case of the EditableDropDownList_t control.
             if (NonEnumValue != null)
                 return NonEnumValue.Length > 0 ? NonEnumValue : null;
@@ -405,7 +402,7 @@ namespace Atdl4net.Model.Controls.Support
         #region IComparable Members
 
         /// <summary>
-        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance 
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance
         /// precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>
         /// <param name="obj"></param>

@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -21,6 +21,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using Atdl4net.Diagnostics;
 using Atdl4net.Diagnostics.Exceptions;
 using Atdl4net.Fix;
@@ -52,14 +53,48 @@ namespace Atdl4net.Model.Controls
         }
 
         // TODO: Implement LocalMktTz as a type.
-        /// <summary>The timezone in which initValue is represented in.  Required when initValue is supplied. Applicable when 
+        /// <summary>The timezone in which initValue is represented in.  Required when initValue is supplied. Applicable when
         /// xsi:type is Clock_t.</summary>
         public string LocalMktTz { get; set; }
 
+        private string _controlInitValue;
         /// <summary>
         /// The InitValue from AlgoDefinition kept as string for deserialization purposes
         /// </summary>
-        public string ControlInitValue { get; set; }
+        public string ControlInitValue
+        {
+            get => _controlInitValue;
+            set
+            {
+                _controlInitValue = value;
+                ParsedControlInitValue = FixDateTimeFormat.AllFormats.Select(f =>
+                {
+                    if (DateTime.TryParseExact(_controlInitValue, f, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                    {
+                        return date as DateTime?;
+                    }
+                    return null;
+                }).FirstOrDefault(x => x != null);
+            }
+        }
+
+        private DateTime? ParsedControlInitValue { get; set; }
+
+        public override string? RawInitValue
+        {
+            get
+            {
+                if (ControlInitValue != null)
+                {
+                    if (InitValueMode == 1)
+                        return DateTime.Now > ParsedControlInitValue ? DateTime.Now.ToString(FixDateTimeFormat.FixDateTime) : ControlInitValue;
+                    else
+                        return ControlInitValue;
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>Defines the treatment of initValue time. 0: use initValue; 1: use current time if initValue time has passed.
         /// The default value is 0.</summary>

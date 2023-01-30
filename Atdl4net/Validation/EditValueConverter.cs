@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -55,50 +55,24 @@ namespace Atdl4net.Validation
 
             string type = typeInstanceToMatch.GetType().FullName;
 
-            switch (type)
+            return type switch
             {
-                case "System.Decimal":
-                    return Convert.ToDecimal(value);
-
-                case "System.Boolean":
-                    return ConvertToBool(value);
-
-                case "System.Int32":
-                    return Convert.ToInt32(value);
-
-                case "System.UInt32":
-                    return Convert.ToUInt32(value);
-
-                case "System.Char":
-                    return Convert.ToChar(value);
-
-                case "System.DateTime":
-                    return FixDateTime.Parse(value, CultureInfo.InvariantCulture);
-
-                case "System.String":
-                    return value;
-
-                case "Atdl4net.Model.Reference.IsoCountryCode":
-                    return value.ParseAsEnum<IsoCountryCode>();
-
-                case "Atdl4net.Model.Reference.IsoCurrencyCode":
-                    return value.ParseAsEnum<IsoCurrencyCode>();
-
-                case "Atdl4net.Model.Reference.IsoLanguageCode":
-                    return value.ParseAsEnum<IsoLanguageCode>();
-
-                case "Atdl4net.Model.Types.Support.MonthYear":
-                    return MonthYear.Parse(value);
-
-                case "Atdl4net.Model.Types.Support.Tenor":
-                    return Tenor.Parse(value);
-
-                case "Atdl4net.Model.Controls.Support.EnumState":
-                    return value;
-
-                default:
-                    throw ThrowHelper.New<InvalidCastException>(ExceptionContext, ErrorMessages.DataConversionError1, value, type);
-            }
+                "System.Decimal" => (IComparable)Convert.ToDecimal(value),
+                "System.Boolean" => ConvertToBool(value),
+                "System.Int32" => Convert.ToInt32(value),
+                "System.UInt32" => Convert.ToUInt32(value),
+                "System.Char" => Convert.ToChar(value),
+                "System.DateTime" => FixDateTime.Parse(value, CultureInfo.InvariantCulture),
+                "System.String" => value,
+                "Atdl4net.Model.Reference.IsoCountryCode" => value.ParseAsEnum<IsoCountryCode>(),
+                "Atdl4net.Model.Reference.IsoCurrencyCode" => value.ParseAsEnum<IsoCurrencyCode>(),
+                "Atdl4net.Model.Reference.IsoLanguageCode" => value.ParseAsEnum<IsoLanguageCode>(),
+                "Atdl4net.Model.Types.Support.MonthYear" => MonthYear.Parse(value),
+                "Atdl4net.Model.Types.Support.Tenor" => Tenor.Parse(value),
+                "Atdl4net.Model.Controls.Support.EnumState" => value,
+                _ => throw ThrowHelper.New<InvalidCastException>(ExceptionContext,
+                    ErrorMessages.DataConversionError1, value, type)
+            };
         }
 
         private static bool ConvertToBool(string value)

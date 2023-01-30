@@ -35,7 +35,7 @@ namespace Atdl4net.Model.Elements
     /// <summary>
     /// Base class for all concrete <see cref="Control_t"/> types.
     /// </summary>
-    public abstract class Control_t : IParentable<StrategyPanel_t>, IValueProvider, IParameterConvertible
+    public abstract class Control_t : IParentable<StrategyPanel_t>, IValueProvider, IParameterizable, IParameterConvertible
     {
         private StrategyPanel_t _owner;
         private readonly StateRuleCollection _stateRules;
@@ -128,6 +128,13 @@ namespace Atdl4net.Model.Elements
         /// Gets the collection of <see cref="StateRule_t"/>s for this control.
         /// </summary>
         public StateRuleCollection StateRules { get { return _stateRules; } }
+
+        /// <summary>
+        /// Gets the <see cref="IParameter"/> referenced by this control.
+        /// </summary>
+        public IParameter Parameter => !string.IsNullOrEmpty(ParameterRef)
+            ? OwningStrategyPanel.OwningStrategy.Parameters?[ParameterRef]
+            : null;
 
         /// <summary>
         /// Adds support for the visitor pattern, enabling the appropriate Visit() method to be called on the visitor

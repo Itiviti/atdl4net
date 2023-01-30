@@ -8,9 +8,9 @@
 //
 //      This file is part of Atdl4net.
 //
-//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public 
+//      Atdl4net is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 //      License as published by the Free Software Foundation, either version 2.1 of the License, or (at your option) any later version.
-// 
+//
 //      Atdl4net is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 //      of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
@@ -21,13 +21,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Atdl4net.Diagnostics.Exceptions;
 using Atdl4net.Fix;
 using Atdl4net.Model.Collections;
+using Atdl4net.Model.Controls.Support;
 using Atdl4net.Model.Elements.Support;
 using Atdl4net.Model.Enumerations;
+using Atdl4net.Model.Types.Support;
 using Atdl4net.Resources;
 using Atdl4net.Utility;
 using Atdl4net.Validation;
@@ -42,17 +43,17 @@ namespace Atdl4net.Model.Elements
     public class Edit_t
     {
         /// <summary>
-        /// Gets/sets the first field name for comparison. When the edit is used within a StateRule, this field 
-        /// must refer to the ID of a Control. When the edit is used within a StrategyEdit, this field must refer 
+        /// Gets/sets the first field name for comparison. When the edit is used within a StateRule, this field
+        /// must refer to the ID of a Control. When the edit is used within a StrategyEdit, this field must refer
         /// to either the name of a parameter or a standard FIX field name. When referring to a standard FIX tag
-        /// then the name must be pre-pended with the string "FIX_", e.g. "FIX_OrderQty". Required the Operator is 
+        /// then the name must be pre-pended with the string "FIX_", e.g. "FIX_OrderQty". Required the Operator is
         /// not null.
         /// </summary>
         public string Field { get; set; }
 
         /// <summary>
-        /// Gets/sets the optional second field name for comparison. When the edit is used within a StateRule, this field 
-        /// must refer to the ID of a Control. When the edit is used within a StrategyEdit, this field must refer 
+        /// Gets/sets the optional second field name for comparison. When the edit is used within a StateRule, this field
+        /// must refer to the ID of a Control. When the edit is used within a StrategyEdit, this field must refer
         /// to either the name of a parameter or a standard FIX field name. When referring to a standard FIX tag
         /// then the name must be pre-pended with the string "FIX_", e.g. "FIX_OrderQty".
         /// </summary>
@@ -77,7 +78,7 @@ namespace Atdl4net.Model.Elements
     /// <summary>
     /// Represents a FIXatdl Edit_t when implemented within a StateRule_t or StrategyEdit_t element.
     /// </summary>
-    public class Edit_t<T> : IEdit<T>, IResolvable<Strategy_t, T> where T : class, IValueProvider
+    public class Edit_t<T> : IEdit<T>, IResolvable<Strategy_t, T> where T : class, IValueProvider, IParameterizable
     {
         // Use Atdl4net.Validation namespace rather than Atdl4net.Model.Elements for debugging purposes
         private static readonly ILog _log = LogManager.GetLogger("Atdl4net.Validation");
@@ -190,10 +191,10 @@ namespace Atdl4net.Model.Elements
         /// <summary>
         /// Gets/sets the optional fixed value to be used as the right hand side of the evaluation.
         /// </summary>
-        /// <remarks>From the spec:<br/><br/>"When Edit is a descendant of a StateRule element, Value refers to the 
-        /// value of the control referred by Field. If the control referred by Field has enumerated values then Value 
+        /// <remarks>From the spec:<br/><br/>"When Edit is a descendant of a StateRule element, Value refers to the
+        /// value of the control referred by Field. If the control referred by Field has enumerated values then Value
         /// refers to the enumID of one of the control's ListItem elements.<br/>
-        /// When Edit is a descendant of a StrategyEdit element, Value refers to the wireValue of the parameter 
+        /// When Edit is a descendant of a StrategyEdit element, Value refers to the wireValue of the parameter
         /// referred by Field."</remarks>
         public string Value { get; set; }
 
@@ -301,6 +302,15 @@ namespace Atdl4net.Model.Elements
 
             bool empty = value == null || (value as string == string.Empty);
 
+            if (value is EnumState enumState && !empty)
+            {
+                var param = _fieldSource.Parameter;
+                if (param != null)
+                {
+                    empty = param.HasEnumPairs && enumState.ToWireValue(param.EnumPairs) == string.Empty;
+                }
+            }
+
             bool result = checkingForExist ? !empty : empty;
 
             _log.Debug(m => m("Evaluated whether Field {0} {1} a value; result is {2} (value was '{3}')", Field,
@@ -325,7 +335,7 @@ namespace Atdl4net.Model.Elements
                 IComparable comparableRhs = rhs as IComparable;
 
                 if (comparableLhs != null && comparableRhs != null)
-                    equal = comparableLhs.CompareTo(comparableRhs) ==0;
+                    equal = comparableLhs.CompareTo(comparableRhs) == 0;
                 else
                     equal = lhs.Equals(rhs);
             }
@@ -384,24 +394,19 @@ namespace Atdl4net.Model.Elements
             if (Field.StartsWith("FIX_"))
                 return GetFixFieldValue(additionalValues, Field);
 
-            object result;
             object fieldValue = FieldValue;
 
-            // If the field value can be converted into a number, most likely it should be treated as one
-            // for comparison purposes
-            if (fieldValue is string)
+            if (fieldValue is string value &&
+                _fieldSource?.Parameter?.Type != null &&
+                    (typeof(AtdlValueType<decimal>).IsAssignableFrom(_fieldSource.Parameter.Type) ||
+                     typeof(AtdlValueType<int>).IsAssignableFrom(_fieldSource.Parameter.Type) ||
+                     typeof(AtdlValueType<uint>).IsAssignableFrom(_fieldSource.Parameter.Type)))
             {
-                decimal number;
-
-                if (decimal.TryParse(fieldValue as string, out number))
-                    result = number;
-                else
-                    result = fieldValue;
+                if (decimal.TryParse(value, out var number))
+                    return number;
             }
-            else
-                result = fieldValue;
 
-            return result;
+            return fieldValue;
         }
 
         private object GetRhsValue(FixFieldValueProvider additionalValues, object lhs)

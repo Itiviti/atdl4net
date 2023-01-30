@@ -75,28 +75,8 @@ namespace Atdl4net.Model.Types
             return HumanReadableTypeNames.TimestampType;
         }
 
-        protected override string MaxValueString()
-        {
-            return MaxValue != null ? MaxValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
+        protected override string MaxValueString() => ConvertDateTimeToDisplayTimezone(MaxValue, FixDateTimeFormat.FixDateTime);
 
-        protected override string MinValueString()
-        {
-            return MinValue != null ? MinValue.Value.ToString(FixDateTimeFormat.FixTimeOnly) : null;
-        }
-
-        protected override ValidationResult ValidateValue(DateTime? value, bool isRequired, EnumPairCollection enumPairs)
-        {
-            //AMS-231 min/max value validation no longer required
-            if (value != null)
-            {
-                if (value == DateTime.MaxValue)
-                    return new ValidationResult(ValidationResult.ResultType.Invalid, ErrorMessages.InvalidDateOrTimeValueUnknown);
-            }
-            else if (isRequired)
-                return new ValidationResult(ValidationResult.ResultType.Missing, ErrorMessages.NonOptionalParameterNotSupplied2);
-
-            return ValidationResult.ValidResult;
-        }
+        protected override string MinValueString() => ConvertDateTimeToDisplayTimezone(MinValue, FixDateTimeFormat.FixDateTime);
     }
 }
